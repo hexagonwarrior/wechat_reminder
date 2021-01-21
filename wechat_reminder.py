@@ -6,6 +6,7 @@
 import itchat
 from itchat.content import *
 from aip import AipOcr
+import time
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -52,21 +53,24 @@ def download_files(msg):
     at = []
     for w in result['words_result']:
         x = w['words']
+        print x
         for name in memberlist:
             # print x # tuple
             # print name # 汉字
-            if x == name.decode('utf-8'):
-                at.append(x)
+            if x.find(name.decode('utf-8')) != -1:
+                at.append(name)
 
     # 找到目标群组，然后发送消息
     roomslist = itchat.get_chatrooms(update=True)
     for r in roomslist:
         # print r['NickName']
         # if r['NickName'] == u'软件学院2020级非全日制':
-        if r['NickName'] == u'端云AI小分队':
+        if r['NickName'] == u'北航非全测试群':
             chatGtoupName = r['UserName'] # 系统的群id
             for a in at:
-                itchat.send_msg(u'请@%s 同学打卡' % (a), chatGtoupName)    
+                print a
+                itchat.send_msg((a), chatGtoupName)
+                time.sleep(1)
         
 
 if __name__ == '__main__':
@@ -77,13 +81,7 @@ if __name__ == '__main__':
         for l in f.readlines():
             name = l.strip()
             memberlist.append(name)
-            '''
-            print '\t%s' % (name),
-            cnt += 1
-            if cnt % 10 == 0:
-                print
-    print
-            '''
+    print '---------------------'
     
     itchat.auto_login(hotReload='True')
     itchat.run()
